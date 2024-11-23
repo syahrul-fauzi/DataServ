@@ -1,0 +1,35 @@
+# cspell: disable
+version: '3.8'
+name: dataserv
+
+services:
+    # Nginx as Reverse Proxy
+  nginx:
+    image: nginx:latest
+    container_name: nginx_reverse_proxy
+    volumes:    
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./data/nginx/cache:/var/cache/nginx 
+    environment:
+      - WEBAPP_PORT= ${WEBAPP_PORT}
+      - BACKEND_PORT= ${BACKEND_PORT}
+      - WEBAPP_HOST= ${WEBAPP_HOST}
+      - WEBAPP_DOMAIN= ${WEBAPP_DOMAIN} 
+      - API_PORT= ${API_PORT}
+      - API_HOST= ${API_HOST} 
+      - API_DOMAIN= ${API_DOMAIN}
+      - MAGIC_LINK_PORT= ${MAGIC_LINK_PORT}
+      - MAGIC_LINK_HOST= ${MAGIC_LINK_HOST}
+      - MAGIC_LINK_DOMAIN= ${MAGIC_LINK_DOMAIN}
+
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - webapp
+      - magic-link
+      - api
+
+    networks:
+      - frontend
+      # - app-network
